@@ -4,11 +4,11 @@ import ctypes  # provides low-level arrays
 class DynamicArray:
     """A dynamic array class akin to a simplified Python list."""
 
-    def __init__(self):
+    def __init__(self, initial_capacity=0):
         """Create an empty array."""
-        self._n = 0  # count actual elements
-        self._capacity = 1  # default array capacity
-        self._A = self._make_array(self._capacity)  # low-level array
+        self._n = initial_capacity  # count actual elements
+        self._capacity = initial_capacity + 1  # default array capacity
+        self._A = self._make_array(initial_capacity + 1)  # low-level array
 
     def __len__(self):
         """Return number of elements stored in the array."""
@@ -56,13 +56,13 @@ class DynamicArray:
         self._A = B
         self._capacity = c
 
-    def _make_array(self, c):  # nonpublic utitity
+    def _make_array(self, c):  # nonpublic utility
         """Return new array with capacity c."""
         return (c * ctypes.py_object)()  # see ctypes documentation
 
     def insert(self, k, value):
         """Insert value at index k, shifting subsequent values rightward."""
-        # (for simplicity, we assume 0 <= k <= n in this verion)
+        # (for simplicity, we assume 0 <= k <= n in this version)
         if self._n == self._capacity:  # not enough room
             return self._resize_and_insert(2 * self._capacity, k, value)  # so double capacity
         for j in range(self._n, k, -1):  # shift rightmost first
@@ -122,8 +122,13 @@ class DynamicArray:
             self._A[k] = other[k - self._n]
         self._n += len(other)
 
+    def _recur_reverse(self, data: [], start: int, last: int):
+        if start < last - 1:
+            data[start], data[last - 1] = data[last - 1], data[start]  # swap first and last
+            self._recur_reverse(data, start + 1, last - 1)  # recur on rest
+
     def reverse(self):
-        print('asndjkksa')
+        self._recur_reverse(self._A, 0, self._n)
 
     def sort(self):
         print('asdjsnka')
@@ -170,10 +175,30 @@ class DynamicArray:
         return result
 
     def __add__(self, other):
-        print('ansjd')
+        if isinstance(other, (int, float)):
+            new_array = self._make_array(self._n)
+            for k in range(self._n):
+                new_array[k] = self._A[k] + other
+            return list(new_array)
+        elif isinstance(other, (list, DynamicArray)):
+            new_array = self._make_array(self._n + len(other))
+            for k in range(self._n):
+                new_array[k] = self._A[k]
+            for j in range(self._n, self._n + len(other)):
+                new_array[j] = other[j - self._n]
+            return list(new_array)
+        else:
+            raise TypeError('can only add a sequence or a number type')
 
     def __mul__(self, other):
-        print('other')
+        if not isinstance(other, int):
+            raise TypeError('can only multiply by an integer value')
+        size = self._n * other
+        new_array = self._make_array(size)
+        for k in range(size):
+            print(k, ' : ', k % self._n)
+            new_array[k] = self._A[k % self._n]
+        return list(new_array)
 
     def __setitem__(self, key, value):
         if 0 <= key < self._n:
@@ -217,3 +242,9 @@ if __name__ == '__main__':
     A.pop()
     print(len(A))
     print(A._capacity)
+    A.print_lis()
+    print(A + 3)
+    print(A + [5, 100, -5])
+    print(A * 3)
+    A.reverse()
+    A.print_lis()
