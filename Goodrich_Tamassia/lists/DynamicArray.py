@@ -16,12 +16,18 @@ class DynamicArray:
 
     def __getitem__(self, k):
         """Return element at index k."""
-        if 0 <= k < self._n:
-            return self._A[k]  # retrieve from array
-        elif -self._n <= k <= -1:
-            return self._A[self._n + k]
-        else:
-            raise IndexError('invalid index')
+        if isinstance(k, int):
+            if 0 <= k < self._n:
+                return self._A[k]  # retrieve from array
+            elif -self._n <= k <= -1:
+                return self._A[self._n + k]
+            else:
+                raise IndexError('invalid index')
+        elif isinstance(k, slice):
+            slicing = DynamicArray()
+            for k in range(k.start, k.stop):
+                slicing.append(self._A[k])
+            return slicing
 
     def append(self, obj):
         """Add object to end of the array."""
@@ -66,15 +72,119 @@ class DynamicArray:
 
     def remove(self, value):
         """Remove first occurrence of value (or raise ValueError)."""
-        # note: we do not consider shrinking the dynamic array in this version
+        found = False
         for k in range(self._n):
             if self._A[k] == value:  # found a match!
                 for j in range(k, self._n - 1):  # shift others to fill gap
                     self._A[j] = self._A[j + 1]
                 self._A[self._n - 1] = None  # help garbage collection
                 self._n -= 1  # we have one less item
-                return  # exit immediately
-        raise ValueError('value not found')  # only reached if no match
+                found = True
+                break  # exit immediately
+
+        if not found:
+            raise ValueError('value not found')  # only reached if no match
+        elif self._n < self._capacity // 4:
+            self._resize(self._capacity / 2)
+
+    def pop(self, k=None):
+        if k is not None and (0 <= k < self._n):
+            for j in range(k, self._n - 1):
+                self._A[j] = self._A[j + 1]
+
+        self._A[self._n - 1] = None
+        self._n -= 1
+
+        if self._n < self._capacity // 4:
+            self._resize(self._capacity // 2)
+
+    def count(self, value):
+        """Count the number of times a given object is found in the list. If it is not in the list return -1 """
+        count = 0
+        for k in range(self._n):
+            if self._A[k] == value:
+                count += 1
+        return count if count > 0 else -1
+
+    def index(self, value):
+        """If value is found in the list return its index, otherwise return -1"""
+        found = -1
+        for k in range(self._n):
+            if self._A[k] == value:
+                found = k
+                break
+        return found
+
+    def extend(self, other):
+        if self._n + len(other) >= self._capacity:
+            self._resize(2 * self._capacity)
+        for k in range(self._n, self._n + len(other)):
+            self._A[k] = other[k - self._n]
+        self._n += len(other)
+
+    def reverse(self):
+        print('asndjkksa')
+
+    def sort(self):
+        print('asdjsnka')
+
+    def print_lis(self):
+        print('[', end=' ')
+        for k in range(self._n):
+            print(self._A[k], end=', ')
+        print(']')
+
+    def __contains__(self, item):
+        return self.index(item) >= 0
+
+    def __eq__(self, other):
+        result = True
+        if len(other) != len(self):
+            result = False
+        else:
+            for k in range(self._n):
+                if self._A[k] != other[k]:
+                    result = False
+                    break
+        return result
+
+    def __lt__(self, other):
+        result = True
+        n = min([len(self), len(other)])
+
+        for k in range(n):
+            if self._A[k] >= other[k]:
+                result = False
+                break
+
+        return result
+
+    def __le__(self, other):
+        result = True
+        k = 0
+        n = min([len(self), len(other)])
+        while result is True and k < n:
+            if self._A[k] > other[k]:
+                result = False
+            k += 1
+        return result
+
+    def __add__(self, other):
+        print('ansjd')
+
+    def __mul__(self, other):
+        print('other')
+
+    def __setitem__(self, key, value):
+        if 0 <= key < self._n:
+            self._A[key] = value
+        elif -self._n <= key <= -1:
+            self._A[self._n + key] = value
+        else:
+            raise IndexError('index out of range')
+
+    def __delitem__(self, key):
+        self.pop(key)
 
 
 if __name__ == '__main__':
@@ -89,5 +199,21 @@ if __name__ == '__main__':
     print(A._capacity)
     for i in range(len(A)):
         print(A[i], end='\t')
-
-
+    print('')
+    A[1:3].print_lis()
+    A.extend([1, 2, 3])
+    A.print_lis()
+    A[5] = -100
+    A.print_lis()
+    A[-6] = 'abc'
+    A.print_lis()
+    A.pop()
+    A.pop(2)
+    A.print_lis()
+    print(len(A))
+    print(A._capacity)
+    A.pop()
+    A.pop()
+    A.pop()
+    print(len(A))
+    print(A._capacity)
