@@ -87,6 +87,25 @@ class DynamicArray:
         elif self._n < self._capacity // 4:
             self._resize(self._capacity / 2)
 
+    def _remove_recursive(self, value, end):
+        found_index = None
+        k = end
+        while k > 0 and found_index is None:
+            if self._A[k - 1] == value:
+                found_index = k - 1
+            else:
+                k -= 1
+
+        if found_index is not None:
+            for j in range(found_index, self._n - 1):
+                self._A[j + 1], self._A[j] = self._A[j], self._A[j + 1]
+            self._A[self._n - 1] = None
+            self._n -= 1
+            self._remove_recursive(value, found_index)
+
+    def remove_all(self, value):
+        self._remove_recursive(value, self._n)
+
     def pop(self, k=None):
         if k is not None and (0 <= k < self._n):
             for j in range(k, self._n - 1):
@@ -247,4 +266,12 @@ if __name__ == '__main__':
     print(A + [5, 100, -5])
     print(A * 3)
     A.reverse()
+    A.print_lis()
+    A.append(10)
+    A.append(3)
+    A.append(-2)
+    A.append(0)
+    A.append(3)
+    A.print_lis()
+    A.remove_all(3)
     A.print_lis()

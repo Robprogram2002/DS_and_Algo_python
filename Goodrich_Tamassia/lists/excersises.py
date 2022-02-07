@@ -1,12 +1,19 @@
+from random import randrange
+
+
 # Let A be an array of size n ≥ 2 containing integers from 1 to n−1, inclusive, with exactly one repeated. Describe a
 # fast algorithm for finding the integer in A that is repeated
 
-# Use standard control structures to compute the sum of all numbers in an
-# n×n data set, represented as a list of lists.
+def find_duplicated(data: []):
+    data.sort()
+    for i in range(len(data)):
+        if i + 1 < len(data) and data[i] == data[i + 1]:
+            return data[i]
+    return None
 
-# Describe how the built-in sum function can be combined with Python’s
-# comprehension syntax to compute the sum of all numbers in an n×n data
-# set, represented as a list of lists.
+
+print(find_duplicated([7, 2, 1, 5, 3, 1, 6, 4]))
+
 
 # The shuffle method, supported by the random module, takes a Python
 # list and rearranges it so that every possible ordering is equally likely.
@@ -14,31 +21,15 @@
 # randrange(n) function of the random module, which returns a random
 # number between 0 and n−1 inclusive
 
-# Implement a pop method for the DynamicArray class that removes the last element of the array, and that shrinks the
-# capacity, N, of the array by half any time the number of elements in the
-# array goes below N/4.
-
-# Consider a variant  in which an array of capacity N is
-# resized to capacity precisely that of the number of elements, any time the
-# number of elements in the array goes strictly below N/4. Give a formal
-# proof that any sequence of n append or pop operations on an initially
-# empty dynamic array takes O(n) time.
+def shuffle(data: []):
+    n = len(data)
+    for i in range(n - 1, 0, -1):
+        rand_index = randrange(0, n)
+        data[rand_index], data[i] = data[i], data[rand_index]
+    return data
 
 
-# we described four different ways to compose a long string: (1) repeated concatenation, (2) appending to a temporary
-# list and then joining, (3) using list comprehension with join, and (4) using generator comprehension with join.
-# Develop an experiment to test the efficiency of all four of these approaches and report your findings.
-
-#  Develop an experiment to compare the relative efficiency of the extend
-# method of Python’s list class versus using repeated calls to append to
-# accomplish the equivalent task
-
-#  The syntax data.remove(value) for Python list data removes only the first
-# occurrence of element value from the list. Give an implementation of a
-# function, with signature remove all(data, value), that removes all occurrences of value
-# from the given list, such that the worst-case running time
-# of the function is O(n) on a list with n elements. Not that it is not efficient
-# enough in general to rely on repeated calls to remove.
+print(shuffle([3, 10, -2, -33, -12, 5, 100, 1.42, -23.1]))
 
 # Let B be an array of size n ≥ 6 containing integers from 1 to n−5, inclusive, with exactly five repeated.
 # Describe a good algorithm for finding the five integers in B that are repeated
@@ -49,15 +40,34 @@
 # A and the pair (y,z) is in B. Describe and analyze an efficient algorithm
 # for computing the natural join of a list A of n pairs and a list B of m pairs.
 
-# Describe a way to use recursion to add all the numbers in an n × n data
-# set, represented as a list of lists.
+data_A = [(1, 2), (2, 8), (-3, 0), (4, -2), (0, 1)]
+data_B = [(2, 10), (10, 1), (0, 0), (-12, 4), (-2, 4)]
+
+
+def element_wise_join(list_a: [], list_b: []):
+    new_list = []
+    for k in range(len(list_a)):
+        if list_a[k][1] == list_b[k][0]:
+            new_list.append((list_a[k][0], list_a[k][1], list_b[k][1]))
+
+    return new_list
+
+
+print(element_wise_join(data_A, data_B))
+
 
 # Write a Python function that takes two three-dimensional numeric data
 # sets and adds them componentwise.
 
-# rite a Python program for a matrix class that can add and multiply twodimensional arrays of numbers, assuming the
-# dimensions agree appropriately for the operation.
+def add_nth_list(data_a: [], data_b: []):
+    result = [k for k in data_a]
+    for k in range(len(data_a)):
+        for j in range(len(data_a[0])):
+            result[k][j] += data_b[k][j]
+    return result
 
-# Write a program that can perform the Caesar cipher for English messages
-# that include both upper- and lowercase characters.
 
+data_A = [[1, 2, 5, 1], [2, 8, 3, 2], [-3, 0, -2, -3], [4, -2, 15, 4], [0, 1, -2, 0]]
+data_B = [[2, 10, 1, 2], [10, 1, 4.6, 10], [0, 0, -10, 0], [-12, 4, 2, -12], [-2, 4, 0, -2]]
+
+print(add_nth_list(data_A, data_B))
