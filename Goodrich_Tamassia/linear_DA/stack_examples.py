@@ -50,14 +50,14 @@ def is_matched_html(raw: str):
         if k == -1:
             return False  # invalid tag
         tag = raw[j + 1:k]  # strip away < >
-        if not tag.startswith('/'):  # this is opening tag
-            S.push(tag)
+        tag_name = tag.split(' ')[0]  # take only the name of the tag
+        if not tag_name.startswith('/'):  # this is opening tag
+            S.push(tag_name)
         else:  # this is closing tag
             if S.is_empty():
                 return False  # nothing to match with
-            if tag[1:] != S.pop():
+            if tag_name[1:] != S.pop():
                 return False  # mismatched delimiter
         j = raw.find('<', k + 1)  # find next ’<’ character (if any)
 
     return S.is_empty()  # were all opening tags matched?
-

@@ -1,24 +1,38 @@
 from EmptyError import Empty
+from FullError import Full
 
 
 class ArrayStack:
     """LIFO Stack implementation using a Python list as underlying storage."""
 
-    def __init__(self):
+    def __init__(self, maxlen=None):
         """Create an empty stack."""
-        self._data = []  # nonpublic list instance
+        if maxlen:
+            self._data = [None] * maxlen  # nonpublic list instance
+        else:
+            self._data = []
+        self._n = 0
+        self.max = maxlen
 
     def __len__(self):
         """Return the number of elements in the stack."""
-        return len(self._data)
+        return self._n
 
     def is_empty(self):
         """Return True if the stack is empty."""
-        return len(self._data) == 0
+        return self._n == 0
 
     def push(self, e):
         """Add element e to the top of the stack."""
-        self._data.append(e)  # new item stored at end of list
+        if self.max:
+            if self._n == self.max:
+                raise Full('the stack is full')
+            else:
+                self._data[self._n] = e
+                self._n += 1
+        else:
+            self._data.append(e)
+            self._n += 1
 
     def top(self):
         """Return (but do not remove) the element at the top of the stack.
@@ -27,7 +41,7 @@ class ArrayStack:
         """
         if self.is_empty():
             raise Empty('Stack is empty')
-        return self._data[-1]  # the last item in the list
+        return self._data[self._n - 1]  # the last item in the list
 
     def pop(self):
         """Remove and return the element from the top of the stack (i.e., LIFO).
@@ -36,7 +50,46 @@ class ArrayStack:
         """
         if self.is_empty():
             raise Empty('Stack is empty')
-        return self._data.pop()  # remove last item from list
+        elif self.max:
+            temp = self._data[self._n - 1]
+            self._data[self._n - 1] = None
+            self._n -= 1
+            return temp
+        else:
+            self._n -= 1
+            return self._data.pop()  # remove last item from list
+
+    def copy(self):
+        """Return a copy of the stack"""
+        temp = ArrayStack()
+        for k in range(self._n):
+            temp.push(self._data[k])
+        return temp
+
+    def _reverse_array(self, start: int, last: int):
+        if start < last - 1:
+            self._data[start], self._data[last - 1] = self._data[last - 1], self._data[start]  # swap first and last
+            self._reverse_array(start + 1, last - 1)  # recur on rest
+
+    def transfer(self, T):
+        """Transfer the elements of the current stack into other"""
+        while not self.is_empty():
+            T.push(self.pop())
+
+    def reverse(self, new=False):
+        """Reverse the elements of the stack. If new is True, then return a new Stack with the same elements but
+        in reverse order"""
+        if new:
+            temp = ArrayStack()
+            self.transfer(temp)
+            result = temp.copy()
+            temp.transfer(self)
+            return result
+        else:
+            self._reverse_array(0, self._n)
+
+    def __str__(self):
+        return str(self._data)
 
 
 class LinkedStack:
@@ -52,8 +105,9 @@ class LinkedStack:
             self._next = next  # reference to next node
 
     # ------------------------------- stack methods -------------------------------
-    def __init__(self):
+    def __init__(self, max_len=None):
         """Create an empty stack."""
+        self._max_len = max_len
         self._head = None  # reference to the head node
         self._size = 0  # number of stack elements
 
@@ -67,8 +121,11 @@ class LinkedStack:
 
     def push(self, e):
         """Add element e to the top of the stack."""
-        self._head = self._Node(e, self._head)  # create and link a new node
-        self._size += 1
+        if self._max_len and self._size == self._max_len:
+            raise Full('The stack if full')
+        else:
+            self._head = self._Node(e, self._head)  # create and link a new node
+            self._size += 1
 
     def top(self):
         """Return (but do not remove) the element at the top of the stack.
@@ -91,6 +148,38 @@ class LinkedStack:
         self._size -= 1
         return answer
 
+    def copy(self):
+        """Return a copy of the stack"""
+        temp = LinkedStack()
+        current = self._head
+        while current is not None:
+            temp.push(current._element)
+            current = current._next
+        return temp
+
+    def transfer(self, T):
+        """Transfer the elements of the current stack into other"""
+        while not self.is_empty():
+            T.push(self.pop())
+
+    def reverse(self):
+        """Reverse the elements of the stack. If new is True, then return a new Stack with the same elements but
+        in reverse order"""
+        temp = LinkedStack()
+        self.transfer(temp)
+        result = temp.copy()
+        temp.transfer(self)
+        return result
+
+
+def __str__(self):
+    elements = []
+    current = self._head
+    while current is not None:
+        elements.append(current)
+        current = current._next
+    return str(elements)
+
 
 if __name__ == '__main__':
     S = ArrayStack()  # contents: [ ]
@@ -110,3 +199,18 @@ if __name__ == '__main__':
     S.push(6)  # contents: [7, 9, 6]
     S.push(8)  # contents: [7, 9, 6, 8]
     print(S.pop())  # contents: [7, 9, 6]; outputs 8
+    print(S)
+    print('-----------------')
+    T = ArrayStack(3)
+    T.push('abc')
+    T.push('def')
+    T.push('ghi')
+    print(T)
+    T.reverse()
+    print(T)
+    # T.push('abc')  # raise error since the stack is full
+    R = S.copy()
+    print(S)
+    print(R)
+    print(T.reverse(new=True))
+    print(T)

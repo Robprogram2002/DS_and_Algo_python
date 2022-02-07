@@ -1,24 +1,56 @@
+from Stack import ArrayStack
+
+
 # Implement a function with signature transfer(S, T) that transfers all elements from
 # stack S onto stack T, so that the element that starts at the top
 # of S is the first to be inserted onto T, and the element at the bottom of S
 # ends up at the top of T
 
+def transfer(S: ArrayStack, T: ArrayStack):
+    while not S.is_empty():
+        T.push(S.pop())
+
+
+stack_1 = ArrayStack()
+stack_1.push(2)
+stack_1.push(4)
+stack_1.push(6)
+stack_1.push(8)
+stack_2 = ArrayStack()
+
+print(stack_1)
+transfer(stack_1, stack_2)
+print(stack_2)
+print(stack_1)
+
+
 # Give a recursive method for removing all the elements from a stack.
+
+def remove_all(S: ArrayStack):
+    if S.is_empty():
+        return
+    S.pop()
+    remove_all(S)
+
+
+remove_all(stack_2)
+print(stack_2)
+
 
 # Implement a function that reverses a list of elements by pushing them onto
 # a stack in one order, and writing them back to the list in reversed order
 
-# Modify the ArrayStack implementation so that the stack’s capacity is limited to
-# maxlen elements, where maxlen is an optional parameter to the
-# constructor (that defaults to None). If push is called when the stack is at
-# full capacity, throw a Full exception (defined similarly to Empty).
+def reverse(data: []):
+    temp = ArrayStack()
+    for i in range(len(data)):
+        temp.push(data[i])
+    for k in range(len(data)):
+        data[k] = temp.pop()
 
-# Redo that exercise, this time preallocating an underlying list with
-# length equal to the stack’s maximum capacity
 
-# Show how to use the transfer function, described in Exercise R-6.3, and
-# two temporary stacks, to replace the contents of a given stack S with those
-# same elements, but in reversed order
+my_list = [1, 2, 3, 4, 5, 6, 7, 8]
+reverse(my_list)
+print(my_list)
 
 # C-6.19
 
@@ -62,5 +94,3 @@
 # deque is full, provide semantics similar to the collections.deque
 # class, whereby a call to insert an element on one end of a deque causes an
 # element to be lost from the opposite side
-
-
