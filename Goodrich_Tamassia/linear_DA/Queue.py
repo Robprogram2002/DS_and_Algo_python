@@ -1,15 +1,20 @@
 from EmptyError import Empty
+from FullError import Full
 
 
 class ArrayQueue:
     """FIFO queue implementation using a Python list as underlying storage."""
     DEFAULT_CAPACITY = 10  # moderate capacity for all new queues
 
-    def __init__(self):
+    def __init__(self, max_len=None):
         """Create an empty queue."""
-        self._data = [None] * ArrayQueue.DEFAULT_CAPACITY
+        if max_len:
+            self._data = [None] * max_len
+        else:
+            self._data = [None] * ArrayQueue.DEFAULT_CAPACITY
         self._size = 0
         self._front = 0
+        self._max = max_len
 
     def __len__(self):
         """Return the number of elements in the queue."""
@@ -39,15 +44,19 @@ class ArrayQueue:
         self._data[self._front] = None  # help garbage collection
         self._front = (self._front + 1) % len(self._data)
         self._size -= 1
-        if 0 < self._size < len(self._data) // 4:
+        if self._max is None and 0 < self._size < len(self._data) // 4:
             self._resize(len(self._data) // 2)
 
         return answer
 
     def enqueue(self, e):
         """Add an element to the back of queue."""
-        if self._size == len(self._data):
+        if self._max and self._size == self._max:
+            raise Full('The queue is full cannot add a new element')
+
+        if self._max is None and self._size == len(self._data):
             self._resize(2 * len(self._data))  # double the array size
+
         avail = (self._front + self._size) % len(self._data)
         self._data[avail] = e
         self._size += 1
@@ -61,6 +70,21 @@ class ArrayQueue:
             self._data[k] = old[walk]  # intentionally shift indices
             walk = (1 + walk) % len(old)  # use old size as modulus
         self._front = 0  # front has been realigned
+
+    def rotate(self):
+        answer = self._data[self._front]
+        self._data[self._front] = None
+        avail = (self._front + self._size) % len(self._data)
+        self._front = (self._front + 1) % len(self._data)
+        self._data[avail] = answer
+
+    def print_queue(self):
+        current = self._front
+        print('[', end='')
+        for k in range(self._size):
+            print(self._data[current], end=', ')
+            current = (current + 1) % len(self._data)
+        print(']')
 
 
 class LinkedQueue:
@@ -200,3 +224,35 @@ class CircularQueue:
         """Rotate front element to the back of the queue."""
         if self._size > 0:
             self._tail = self._tail._next  # old head becomes new tail
+
+
+if __name__ == '__main__':
+    queue = ArrayQueue()
+    queue.enqueue(10)
+    queue.enqueue(100)
+    queue.enqueue(1000)
+    queue.enqueue(1000)
+    queue.print_queue()
+    queue.dequeue()
+    queue.dequeue()
+    queue.print_queue()
+
+    queue = ArrayQueue(4)
+    queue.enqueue('a')
+    queue.enqueue('b')
+    queue.enqueue('c')
+    queue.enqueue('d')
+    queue.print_queue()
+    queue.dequeue()
+    queue.dequeue()
+    queue.print_queue()
+    queue.enqueue('e')
+    queue.enqueue('f')
+    queue.print_queue()
+    print('---------')
+    # queue.enqueue('g')  #this cause a full error
+    queue.rotate()
+    queue.print_queue()
+    queue.rotate()
+    queue.rotate()
+    queue.print_queue()
