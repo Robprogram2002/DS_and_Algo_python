@@ -52,3 +52,4 @@ class _DoublyLinkedBase:
         element = node._element  # record deleted element
         node._prev = node._next = node._element = None  # deprecate node
         return element  # return deleted element
+

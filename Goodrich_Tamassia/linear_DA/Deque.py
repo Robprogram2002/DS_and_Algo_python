@@ -90,7 +90,12 @@ class ArrayDeque:
         self._data = new_list
         self._front = 0
 
-    def rotate(self, shift=1):
+    def rotate(self, shift=None):
+        if shift is not None and shift > 1:
+            for i in range(shift):
+                self.rotate()
+            return
+
         answer = self._data[self._front]
         self._data[self._front] = None
         avail = (self._front + self._size) % len(self._data)
@@ -200,10 +205,13 @@ if __name__ == '__main__':
     deque.remove_left()
     deque.rotate()
     deque.print_deque()
-    deque.append_right(20)
+    deque.append_left(20)
     deque.print_deque()
     print(deque.count(20))
-
+    print('----------')
+    deque.print_deque()
+    deque.rotate(2)
+    deque.print_deque()
     print('------------')
     deque = ArrayDeque(5)
     deque.append_left(10)

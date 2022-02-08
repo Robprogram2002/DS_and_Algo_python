@@ -71,7 +71,13 @@ class ArrayQueue:
             walk = (1 + walk) % len(old)  # use old size as modulus
         self._front = 0  # front has been realigned
 
-    def rotate(self):
+    def rotate(self, shift=None):
+
+        if shift is not None and shift > 1:
+            for i in range(shift):
+                self.rotate()
+            return
+
         answer = self._data[self._front]
         self._data[self._front] = None
         avail = (self._front + self._size) % len(self._data)
@@ -100,11 +106,12 @@ class LinkedQueue:
             self._next = next
 
     # ------------------------------- queue methods -------------------------------
-    def __init__(self):
+    def __init__(self, max_len=None):
         """Create an empty queue."""
         self._head = None
         self._tail = None
         self._size = 0  # number of queue elements
+        self._max = max_len
 
     def __len__(self):
         """Return the number of elements in the queue."""
@@ -139,6 +146,9 @@ class LinkedQueue:
 
     def enqueue(self, e):
         """Add an element to the back of queue."""
+        if self._max and self._size == self._max:
+            raise Full('The queue is already full cannot add new elements')
+
         newest = self._Node(e, None)  # node will be new tail node
         if self.is_empty():
             self._head = newest  # special case: previously empty
@@ -146,6 +156,14 @@ class LinkedQueue:
             self._tail._next = newest
         self._tail = newest  # update reference to tail node
         self._size += 1
+
+    def print_queue(self):
+        current = self._head
+        print('[')
+        while current is not None:
+            print(current._element, end=', ')
+            current = current._next
+        print(']')
 
 
 # In addition to the traditional queue operations, the CircularQueue class supports
@@ -225,6 +243,19 @@ class CircularQueue:
         if self._size > 0:
             self._tail = self._tail._next  # old head becomes new tail
 
+    def _count_nodes(self, current, first):
+        if current._element == first:
+            return 1
+        else:
+            return 1 + self._count_nodes(current._next, first)
+
+    def nodes(self):
+        """Return the number of nodes in the queue"""
+        if self.is_empty():
+            return 0
+        else:
+            return self._count_nodes(self._tail._next, self._tail._element)
+
 
 if __name__ == '__main__':
     queue = ArrayQueue()
@@ -236,7 +267,6 @@ if __name__ == '__main__':
     queue.dequeue()
     queue.dequeue()
     queue.print_queue()
-
     queue = ArrayQueue(4)
     queue.enqueue('a')
     queue.enqueue('b')
@@ -256,3 +286,14 @@ if __name__ == '__main__':
     queue.rotate()
     queue.rotate()
     queue.print_queue()
+    queue.rotate(3)
+    queue.print_queue()
+    print('-----------------')
+    circ_queue = CircularQueue()
+    circ_queue.enqueue('a')
+    circ_queue.enqueue('b')
+    circ_queue.enqueue('c')
+    circ_queue.enqueue('d')
+    circ_queue.enqueue('e')
+    print(len(circ_queue))
+    print(circ_queue.nodes())
