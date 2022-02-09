@@ -1,4 +1,7 @@
+import random
+
 from Stack import ArrayStack
+from Queue import ArrayQueue, CircularQueue
 
 
 # Implement a function with signature transfer(S, T) that transfers all elements from
@@ -52,6 +55,7 @@ my_list = [1, 2, 3, 4, 5, 6, 7, 8]
 reverse(my_list)
 print(my_list)
 
+
 # Describe a nonrecursive algorithm for enumerating all permutations of the
 # numbers {1,2,...,n} using an explicit stack
 
@@ -65,3 +69,23 @@ print(my_list)
 # certain element x, with the additional constraint that your algorithm must
 # return the elements back to S in their original order. You may only use S,
 # Q, and a constant number of other variables.
+
+
+# Implement a hot potato game using a queue
+
+def potato_game(people):
+    people_queue = ArrayQueue()
+    # people_queue = CircularQueue()
+    for name in people:
+        people_queue.enqueue(name)
+    while len(people_queue) > 1:
+
+        for i in range(0, random.randint(1, 30)):
+            people_queue.rotate()
+
+        print("{} has been eliminated".format(people_queue.dequeue()))
+
+    print("{} is the winner".format(people_queue.dequeue()))
+
+
+potato_game(["Bill", "David", "Susan", "Jane", "Kent", "Brad"])

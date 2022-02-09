@@ -19,18 +19,14 @@ from Miller_problemsolving.chapter3.Deque import Deque
 
 def palindrome_checker(word):
     deque = Deque()
-    pass_check = True
     for char in word:
         deque.add_rear(char)
 
-    while deque.size() > 1 and pass_check:
-        condition = deque.remove_front() != deque.remove_rear()
-        if condition:
-            pass_check = False
-        else:
-            continue
+    while deque.size() > 1:
+        if deque.remove_front() != deque.remove_rear():
+            return False
 
-    return pass_check
+    return True
 
 
 print(palindrome_checker('radar'))
@@ -40,3 +36,4 @@ print(palindrome_checker('madam'))
 print(palindrome_checker("lsdkjfskf"))
 print(palindrome_checker('sandwich'))
 print(palindrome_checker('pencil'))
+print(palindrome_checker('dog&god'))

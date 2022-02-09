@@ -4,13 +4,10 @@
 
 class Stack:
     def __init__(self, new_list=None):
-        if new_list == [] or new_list is None:
-            self.items = []
-        else:
-            self.items = new_list
+        self.items = new_list if new_list is not None else []
 
     def is_empty(self):
-        return self.items == []
+        return len(self.items) == 0
 
     def size(self):
         return len(self.items)
@@ -26,20 +23,6 @@ class Stack:
 
     def print_stack(self):
         print(self.items)
-
-s = Stack()
-print(s.is_empty())
-s.push(4)
-s.push('dog')
-
-print(s.peek())
-s.push(True)
-print(s.size())
-print(s.is_empty())
-s.push(8.4)
-print(s.pop())
-print(s.pop())
-print(s.size())
 
 
 # It is important to note that we could have chosen to implement the stack using a list where
@@ -80,15 +63,26 @@ class StackV2:
 
 def rev_string(my_str):
     str_stack = Stack()
-    rev_str = ""
     for char in my_str:
         str_stack.push(char)
-    for i in range(0, len(my_str)):
-        rev_str += str_stack.pop()
-
-    return rev_str
+    return ''.join([str_stack.pop() for k in range(len(my_str))])
 
 
-print(rev_string("dog"))
-print(rev_string("superduper"))
-print(rev_string(rev_string("anagrama")))
+if __name__ == '__main__':
+    s = Stack()
+    print(s.is_empty())
+    s.push(4)
+    s.push('dog')
+
+    print(s.peek())
+    s.push(True)
+    print(s.size())
+    print(s.is_empty())
+    s.push(8.4)
+    print(s.pop())
+    print(s.pop())
+    print(s.size())
+
+    print(rev_string("dog"))
+    print(rev_string("superduper"))
+    print(rev_string(rev_string("anagram")))

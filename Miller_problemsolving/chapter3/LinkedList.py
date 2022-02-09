@@ -5,9 +5,9 @@
 # denote a reference that is referring to None.
 
 class Node:
-    def __init__(self, data):
+    def __init__(self, data, next_ref=None):
         self.item = data
-        self.next = None
+        self.next = next_ref
 
     def get_data(self):
         return self.item
@@ -61,14 +61,11 @@ class LinkedList:
     # items will need to be linked to this new first item so that they follow.
 
     def add(self, new_item):
-        new_node = Node(new_item)
+        new_node = Node(new_item, self.head_ref)
+        self.head_ref = new_node
+
         if self.is_empty():
-            self.head_ref = new_node
             self.tail_ref = new_node
-            new_node.next = None
-        else:
-            new_node.next = self.head_ref
-            self.head_ref = new_node
             # The order of the two steps described above is very important.
 
     # The next methods that we will implement-size, search, and remove-are all based on a technique
@@ -116,14 +113,11 @@ class LinkedList:
     def remove(self, item):
         current = self.head_ref
         prev = None
-        before_prev = None
         found = False
         while current is not None and not found:
             if current.get_data() == item:
                 found = True
             else:
-                if prev is not None:
-                    before_prev = prev
                 prev = current
                 current = current.get_next()
 
@@ -133,8 +127,8 @@ class LinkedList:
                 self.head_ref = current.get_next()
             elif current.get_next() is None:
                 # we are removing the last element
-                self.tail_ref = before_prev.get_next()
-                prev.set_next(current.get_next())
+                self.tail_ref = prev
+                prev.set_next(None)
             else:
                 # we are removing a between element
                 prev.set_next(current.get_next())
@@ -155,10 +149,7 @@ class LinkedList:
                 current = current.get_next()
                 count += 1
 
-        if not found:
-            count = -1
-
-        return count
+        return count if found else -1
 
     def append(self, item):
         new_node = Node(item)
@@ -166,26 +157,26 @@ class LinkedList:
         self.tail_ref = new_node
 
     def insert(self, position, item):
+        if position == 0:
+            return self.add(item)
+        elif position == self.size() - 1:
+            return self.append(item)
+
         new_node = Node(item)
         current = self.head_ref
         prev = None
         count = 0
         found = False
 
-        if position == 0:
-            return self.add(item)
-        elif position == self.size() - 1:
-            return self.append(item)
-        else:
-            while current is not None and not found:
-                if count == position:
-                    new_node.set_next(current)
-                    prev.set_next(new_node)
-                    found = True
-                else:
-                    prev = current
-                    current = current.get_next()
-                    count += 1
+        while current is not None and not found:
+            if count == position:
+                new_node.set_next(current)
+                prev.set_next(new_node)
+                found = True
+            else:
+                prev = current
+                current = current.get_next()
+                count += 1
 
         if not found:
             raise RuntimeError("index out of the list elements range")
@@ -233,42 +224,60 @@ class LinkedList:
         print(current_list)
 
 
-mylist = LinkedList()
-mylist.add(31)
-mylist.add(77)
-mylist.add(17)
-mylist.add(93)
-mylist.add(26)
-mylist.add(54)
-mylist.print_list()
+if __name__ == '__main__':
+    mylist = LinkedList()
+    mylist.add(31)
+    mylist.add(77)
+    mylist.add(17)
+    mylist.add(93)
+    mylist.add(26)
+    mylist.add(54)
+    mylist.print_list()
 
-print(mylist.size())
-print(mylist.search(17))
-print(mylist.search(-1))
+    print(mylist.size())
+    print(mylist.search(17))
+    print(mylist.search(-1))
 
-print(mylist.index(17))
-print(mylist.index(-4))
+    print(mylist.index(17))
+    print(mylist.index(-4))
 
-mylist.remove(26)
-mylist.print_list()
-mylist.remove(31)
-mylist.print_list()
-mylist.remove(54)
-mylist.print_list()
+    mylist.remove(26)
+    mylist.print_list()
+    mylist.remove(31)
+    mylist.print_list()
+    mylist.remove(54)
+    mylist.print_list()
 
-mylist.append(-2)
-mylist.append("The end")
-mylist.print_list()
+    mylist.append(-2)
+    mylist.append("The end")
+    mylist.print_list()
 
-mylist.insert(0, "the start")
-mylist.print_list()
-mylist.insert(mylist.size() - 1, "The end 2")
-mylist.print_list()
-mylist.insert(mylist.size() // 2, "The middle")
-mylist.print_list()
+    mylist.insert(0, "the start")
+    mylist.print_list()
+    mylist.insert(mylist.size() - 1, "The end 2")
+    mylist.print_list()
+    mylist.insert(mylist.size() // 2, "The middle")
+    mylist.print_list()
 
-mylist.pop()
-mylist.print_list()
+    mylist.pop()
+    mylist.print_list()
 
-mylist.pop((mylist.size() // 2) + 1)
-mylist.print_list()
+    mylist.pop((mylist.size() // 2) + 1)
+    mylist.print_list()
+
+# TODO: str method
+# Implement the __str__ method in the UnorderedList class. What would be a good string
+# representation for a list?
+# Implement __str__ method so that lists are displayed the Python way (with square brackets).
+
+# TODO: Implement a slice method for the UnorderedList class.
+# It should take two parameters,
+# start and stop, and return a copy of the list starting at the start position and going up to
+# but not including the stop position.
+
+# TODO:
+# Implement a stack using linked lists.
+# Implement a queue using linked lists.
+# Implement a deque using linked lists.
+
+# TODO: implement a doubly linked list

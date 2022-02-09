@@ -1,15 +1,14 @@
 import re
-from Miller_problemsolving.chapter3.Stacks import Stack
 
 
 # Calculating the Sum of a List of Numbers
-def list_sum(num_list):
+def list_sum(num_list, start: int, end: int):
     # This check is crucial and is our escape clause from the function. The sum of
     # a list of length 1 is trivial; it is just the number in the list
-    if len(num_list) == 1:
-        return num_list[0]
+    if start == end - 1:
+        return num_list[start]
     else:
-        return num_list[0] + list_sum(num_list[1:])
+        return num_list[start] + list_sum(num_list, start + 1, end)
 
     # You should think of this series of calls as a series of simplifications. Each time we make a recursive
     # call we are solving a smaller problem, until we reach the point where the problem cannot get
@@ -19,7 +18,7 @@ def list_sum(num_list):
     # the solutions of each of the small problems until the initial problem is solved
 
 
-print(list_sum([1, 3, 5, 7, 9]))
+print(list_sum([1, 3, 5, 7, 9, -2], start=0, end=6))
 
 
 # Converting an Integer to a String in Any Base
@@ -57,6 +56,12 @@ def to_str(n, base):
 
 
 print(to_str(1245, 10))
+print(to_str(233, 8))
+print(to_str(233, 9))
+print(to_str(233, 16))
+print(to_str(333, 16))
+print(to_str(10, 2))
+
 
 # When we detect the base case, we stop recursing and simply return the string from the
 # convertString sequence. In line 6 we satisfy both the second and third laws – by making the
@@ -66,29 +71,10 @@ print(to_str(1245, 10))
 # from convertString, we modified our algorithm to push the strings onto a stack prior to making
 # the recursive call.
 
-r_stack = Stack()
-
-
-def to_str(n, base):
-    convert_string = "0123456789ABCDEF"
-    while n > 0:
-        if n < base:
-            r_stack.push(convert_string[n])
-        else:
-            r_stack.push(convert_string[n % base])
-
-        n = n // base
-    res = ""
-    while not r_stack.is_empty():
-        res = res + str(r_stack.pop())
-    return res
-
-
-print(to_str(10, 2))
-
 
 # The previous example gives us some insight into how Python implements a recursive function
-# call. When a function is called in Python, a stack frame is allocated to handle the local variables of the function. When the function returns, the return value is left on top of the stack for
+# call. When a function is called in Python, a stack frame is allocated to handle the local variables of the function.
+# When the function returns, the return value is left on top of the stack for
 # the calling function to access.
 
 
@@ -102,7 +88,20 @@ def reverse_str(text):
         return reverse_str(text[1:]) + text[0]
 
 
+def _reverse_list(data: [], start, end):
+    if start < end:
+        data[start], data[end] = data[end], data[start]
+        _reverse_list(data, start + 1, end - 1)
+
+
+def reverse_str_v2(text: str):
+    letters = list(text)
+    _reverse_list(letters, start=0, end=len(letters) - 1)
+    return ''.join(letters)
+
+
 print(reverse_str("transformer"))
+print(reverse_str_v2("transformer"))
 
 
 # TODO: Write a function that takes a string as a parameter and returns true if the string is a palindrome
@@ -118,9 +117,34 @@ def is_palindrome(text):
         return False
 
 
-print(is_palindrome("Reviled did I live, said I, as evil I did deliver"))
-print(is_palindrome("is a false palindrome"))
-print(is_palindrome("Go hang a salami; I’m a lasagna hog"))
+# using only recursion
+def is_palindrome2(text: str, start: int, end: int):
+    if start < end:
+        if text[start].isalpha():
+            if text[end - 1].isalpha():
+                if text[start] == text[end - 1]:
+                    return is_palindrome2(text, start + 1, end - 1)
+                else:
+                    return False
+            else:
+                return is_palindrome2(text, start, end - 1)
+        else:
+            return is_palindrome2(text, start + 1, end)
+    return True
+
+
+text1 = "Reviled did I live, said I, as evil I did deliver"
+text2 = "is a false palindrome"
+text3 = "Go hang a salami; I’m a lasagna hog"
+
+print(is_palindrome(text1))
+print(is_palindrome(text2))
+print(is_palindrome(text3))
+
+print('-----------')
+print(is_palindrome2(text1.lower(), 0, len(text1)))
+print(is_palindrome2(text2.lower(), 0, len(text2)))
+print(is_palindrome2(text3.lower(), 0, len(text3)))
 
 
 # TODO: Write a recursive function to compute the factorial of a number.
@@ -139,11 +163,9 @@ print(factorial(10))
 
 # TODO: Write a recursive function to reverse a list.
 
-def reverse_list(items):
-    if len(items) == 1:
-        return items
-    else:
-        return [items.pop()] + reverse_list(items)
+def reverse_list(data: []):
+    _reverse_list(data, 0, len(data) - 1)
+    return data
 
 
 print(reverse_list([1, 2, 3, 4, 5, 6]))

@@ -2,7 +2,7 @@
 
 class Deque:
     def __init__(self, new_list=None):
-        if new_list == [] or new_list is None:
+        if new_list is None:
             self.items = []
         else:
             self.items = new_list
@@ -32,4 +32,3 @@ class Deque:
 # is 𝑂(1) whereas adding and removing from the rear is 𝑂(𝑛). This is to be expected given the
 # common operations that appear for adding and removing items. Again, the important thing is
 # to be certain that we know where the front and rear are assigned in the implementation
-
