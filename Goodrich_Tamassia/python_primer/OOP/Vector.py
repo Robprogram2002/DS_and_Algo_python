@@ -12,13 +12,19 @@ class Vector:
     """Represent a vector in a multidimensional space."""
 
     def __init__(self, d):
+        """Create a new vector instance.
+
+        d:  (int, iterable)
+        """
+
         if isinstance(d, int):
+            # create a zero vector with length equal to d
             self._coords = [0] * d
         else:
             try:  # we test if param is iterable
                 self._coords = [val for val in d]
             except TypeError:
-                raise TypeError('invalid parameter type')
+                raise TypeError('invalid parameter type.')
 
     def __len__(self):
         """Return the dimension of the vector."""
@@ -62,7 +68,7 @@ class Vector:
         return '<' + str(self._coords)[1:-1] + '>'  # adapt list representation
 
     def __neg__(self):
-        self.negated_ = """Return copy of vector with all coordinates negated."""
+        """Return copy of vector with all coordinates negated."""
         result = Vector(len(self))  # start with vector of zeros
         for j in range(len(self)):
             result[j] = -self[j]
@@ -119,3 +125,4 @@ if __name__ == '__main__':
     total = 0
     for entry in v:  # implicit iteration via __len__ and __getitem__
         total += entry
+    print(x + u == u + x)

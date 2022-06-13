@@ -37,3 +37,13 @@ class PredatoryCreditCard(CreditCard):
             # if positive balance, convert APR to monthly multiplicative factor
             monthly_factor = pow(1 + self._apr, 1 / 12)
             self._balance *= monthly_factor
+
+
+# Modify the class so that
+
+# once a customer has made ten calls to charge in the current month, each additional call to
+# that function results in an additional $1 surcharge
+
+# so that a customer is assigned a minimum monthly payment, as a percentage of the balance, and so that a late fee is
+# assessed if the customer does not subsequently pay that minimum amount before the next monthly cycle
+

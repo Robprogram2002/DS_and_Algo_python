@@ -50,6 +50,8 @@ class CreditCard:
         """
         if price + self._balance > self._limit:  # if charge would exceed limit,
             return False  # cannot accept charge
+        elif price < 0:  # if price is negative this mean the customer's balance must go down
+            self.make_payment(-price)
         else:
             self._balance += price
             return True
@@ -65,8 +67,9 @@ class CreditCard:
 
 if __name__ == '__main__':
     wallet = [CreditCard('John Bowman', 'California Savings',
-                         '5391 0375 9387 5309', 2500), CreditCard('John Bowman', 'California Federal',
-                                                                  '3485 0399 3395 1954', 3500),
+                         '5391 0375 9387 5309', 2500),
+              CreditCard('John Bowman', 'California Federal',
+                         '3485 0399 3395 1954', 3500),
               CreditCard('John Bowman', 'California Finance',
                          '5391 0375 9387 5309', 5000)]
 

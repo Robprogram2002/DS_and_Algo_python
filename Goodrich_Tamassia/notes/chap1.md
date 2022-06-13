@@ -210,6 +210,28 @@ function signature is based on the concept of **positional arguments**.
 Python supports an alternate mechanism for sending a parameter to a function known as a **keyword argument**. A keyword
 argument is specified by explicitly assigning an actual parameter to a formal parameter by name.
 
+### Files
+Files are accessed in Python beginning with a call to a built-in function, named `open`, that returns a proxy 
+for interactions with the underlying file. The open function accepts an optional second parameter that determines the
+access mode. The default mode is `'r'` for reading. Other common modes are `w'` for writing to the file (causing any existing 
+file with that name to be overwritten), or `'a'` for appending to the end of an existing file.
+
+When processing a file, the proxy maintains a current position within the file as  an offset from the beginning, 
+measured in number of bytes. When opening a file with mode r or w , the position is  initially 0; if opened in append 
+mode,`'a'`, the position is initially at the end of the file. The syntax ``fp.close()`` closes the file associated with 
+proxy `fp`, ensuring that any written contents are saved
+
+The most basic command for reading via a proxy is the read method. When invoked on file proxy fp,as `fp.read(k)`, the 
+command returns a string representing the next k bytes of the file, starting at the current position. Without a parameter, 
+the syntax `fp.read()` returns the remaining contents of the file in entirety. For convenience, files can be read a line 
+at a time, using the readline method to read one line, or the readlines method to return a list of all remaining lines. 
+Files also support the for-loop syntax, with iteration being line by line (e.g., `for line in fp:`).
+
+When a file proxy is writable, for example, if created with access mode ``w`` or `'a`', text can be written using methods 
+`write` or `writelines`. For example, the syntax `fp.write( Hello World.\n )` writes a single line to the file with the 
+given string. Note well that write does not explicitly add a trailing newline, so desired newline characters must be 
+embedded directly in the string parameter. 
+
 ### Exception Handling
 
 Exceptions are unexpected events that occur during the execution of a program. An exception might result from a logical
@@ -460,7 +482,13 @@ simultaneous assignment, a swap typically requires more delicate use of a tempor
     k = temp
 
 With the simultaneous assignment, the unnamed tuple representing the packed values on the right-hand side implicitly
-serves as the temporary variable when performing such a swap.
+serves as the temporary variable when performing such a swap. Other example of use
+
+    def fibonacci(): 
+      a, b = 0, 1 
+      while True: 
+        yield a 
+        a, b = b, a+b
 
 ### Scopes and Namespaces
 
