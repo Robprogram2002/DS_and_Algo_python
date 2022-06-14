@@ -1,7 +1,15 @@
 import os
 
 
-# A recursive algorithm for computing the sum of a sequence of numbers
+# factorial
+def factorial(n: int):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+
+# A recursive algorithm for computing the sum of the 1st  n numbers in a sequence
 
 def linear_sum(data: [], n: int):
     if len(data) == 0:
@@ -177,6 +185,21 @@ print(int_log2(100), int_log2(40))
 print(int_log2_recursive(100), int_log2_recursive(40))
 
 
+# Describe an efficient recursive function for solving the element uniqueness problem, which runs in time that is at
+# most O(n^2) in the worst case without using sorting
+
+def is_uniqueness(s: [], start):
+    if start < len(s) - 1:
+        for j in range(start + 1, len(s)):
+            if s[start] == s[j]:
+                return False
+        return is_uniqueness(s, start + 1)
+    return True
+
+
+print('is unique: ', is_uniqueness([2, 5, -8, 3, -123, 43, 1, 2, 0], 0))
+
+
 # Give a recursive algorithm to compute the product of two positive integers,
 # m and n, using only addition and subtraction
 
@@ -268,7 +291,7 @@ print(vowels_vs_consonants('i am  a good person too', len('i am  a good person t
 def rearrange_even_odd(data: [], start, end):
     if start < end - 1:
         if data[start] % 2 != 0:
-            if data[end - 1] % 2 == 0:
+            if data[end - 10] % 2 == 0:
                 data[start], data[end - 1] = data[end - 1], data[start]
                 rearrange_even_odd(data, start + 1, end - 1)
             else:
@@ -344,5 +367,10 @@ dir = 'C:\\Users\\rober\\PycharmProjects\\DS_and_Algorithms_Python\\Goodrich_Tam
 print(is_file_in_dir(dir, 'disk_usage.py'))
 print(is_file_in_dir(dir, 'random_name.py'))
 
-
 # Write a program that can solve instances of the Tower of Hanoi problem
+
+
+# Python’s os module provides a function with signature walk(path) that is a generator yielding the tuple (dirpath,
+# dirnames, filenames) for each subdirectory of the directory identified by string path, such that string dirpath is
+# the full path to the subdirectory, dirnames is a list of the names of the subdirectories within dirpath,and filenames
+# is a list of the names of non-directory entries of dirpath. Give your own implementation of such a walk function.

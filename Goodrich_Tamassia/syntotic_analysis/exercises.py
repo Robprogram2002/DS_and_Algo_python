@@ -1,25 +1,4 @@
-# Copyright 2013, Michael H. Goldwasser
-#
-# Developed for use with the book:
-#
-#    Data Structures and Algorithms in Python
-#    Michael T. Goodrich, Roberto Tamassia, and Michael H. Goldwasser
-#    John Wiley & Sons, 2013
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-def example1(S):
+def sum_seq(S):
     """Return the sum of the elements in sequence S."""
     n = len(S)
     total = 0
@@ -70,3 +49,14 @@ def example5(A, B):  # assume that A and B have equal length
         if B[i] == total:
             count += 1
     return count
+
+
+# A sequence S contains n−1 unique integers in the range [0,n−1],that is, there is one number from this range that is
+# not in S. Design an O(n)time algorithm for finding that number. You are only allowed to use O(1) additional space
+# besides the sequence S itself.
+
+def find_missing_int(s: [int]):
+    return sum(range(len(s)+1)) - sum(s)
+
+
+print(find_missing_int([0, 1, 2, 3, 4, 5, 7, 8, 9]))
