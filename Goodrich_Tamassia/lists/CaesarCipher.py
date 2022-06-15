@@ -1,4 +1,5 @@
 from random import randint
+from random import sample
 
 
 # Arguably the earliest encryption scheme is the Caesar cipher, which is named
@@ -104,6 +105,59 @@ class CaesarCipher2:
         return ''.join(str_list)
 
 
+# Implement a class, SubstitutionCipher, with a constructor that takes a string with the 26 uppercase letters in an
+# arbitrary order and uses that for the forward mapping for encryption. You should derive the backward mapping from the
+# forward version.
+
+class SubstitutionCipher:
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+               'v', 'w', 'x', 'y', 'z']
+
+    def __init__(self, encrypter: str):
+        self._encrypter = encrypter.lower()
+        self._decrypter = {encrypter[k]: SubstitutionCipher.letters[k] for k in range(len(encrypter))}
+        print(self._encrypter)
+
+    def encrypt(self, plaintext: str):
+        msg = list(plaintext.upper())
+        for k in range(len(msg)):
+            if msg[k].isupper():
+                j = ord(msg[k]) - ord('A')  # index from 0 to 25
+                msg[k] = self._encrypter[j]  # replace this character
+        return ''.join(msg)
+
+    def decrypt(self, ciphertext: str):
+        msg = list(ciphertext)
+        for k in range(len(msg)):
+            if msg[k].isalpha():
+                msg[k] = self._decrypter[msg[k]]
+        return ''.join(msg)
+
+
+# Design a RandomCipher class as a subclass of the SubstitutionCipher from, so that each instance of the
+# class relies on a random permutation of letters for its mapping
+
+class RandomCipher:
+    def __init__(self, alphabet: [str]):
+        self._encrypter = ''.join(sample(alphabet, len(alphabet)))
+        self._decrypter = {self._encrypter[k]: alphabet[k] for k in range(len(self._encrypter))}
+
+    def encrypt(self, plaintext: str):
+        msg = list(plaintext.upper())
+        for k in range(len(msg)):
+            if msg[k].isupper():
+                j = ord(msg[k]) - ord('A')  # index from 0 to 25
+                msg[k] = self._encrypter[j]  # replace this character
+        return ''.join(msg)
+
+    def decrypt(self, ciphertext: str):
+        msg = list(ciphertext)
+        for k in range(len(msg)):
+            if msg[k].isalpha():
+                msg[k] = self._decrypter[msg[k]]
+        return ''.join(msg)
+
+
 if __name__ == '__main__':
     cipher = CaesarCipher(3)
     message = "THE EAGLE IS IN PLAY; MEET AT JOE'S."
@@ -119,6 +173,7 @@ if __name__ == '__main__':
     print('Message:', answer)
 
     print('------------------------- VERSION 2 --------------------')
+
     abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
            'w', 'x', 'y', 'z']
     cipher = CaesarCipher2(abc, 3)
@@ -129,6 +184,23 @@ if __name__ == '__main__':
     print('Message:', answer)
 
     message = "There is a big dog on the bed, you can come for it"
+    coded = cipher.encrypt(message)
+    print('Secret: ', coded)
+    answer = cipher.decrypt(coded)
+    print('Message:', answer)
+
+    print('------------------ VERSION 3 --------------')
+    random_abc = ''.join(sample(abc, len(abc)))
+    cipher = SubstitutionCipher(random_abc)
+    message = "THE EAGLE IS IN PLAY; MEET AT JOE'S."
+    coded = cipher.encrypt(message)
+    print('Secret: ', coded)
+    answer = cipher.decrypt(coded)
+    print('Message:', answer)
+
+    print('------------------ VERSION 4 --------------')
+    cipher = RandomCipher(abc)
+    message = "THE EAGLE IS IN PLAY; MEET AT JOE'S."
     coded = cipher.encrypt(message)
     print('Secret: ', coded)
     answer = cipher.decrypt(coded)
