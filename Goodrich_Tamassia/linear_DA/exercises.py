@@ -22,6 +22,7 @@ stack_1.push(8)
 stack_2 = ArrayStack()
 
 print(stack_1)
+print(stack_2)
 transfer(stack_1, stack_2)
 print(stack_2)
 print(stack_1)
@@ -30,10 +31,9 @@ print(stack_1)
 # Give a recursive method for removing all the elements from a stack.
 
 def remove_all(S: ArrayStack):
-    if S.is_empty():
-        return
-    S.pop()
-    remove_all(S)
+    if not S.is_empty():
+        S.pop()
+        remove_all(S)
 
 
 remove_all(stack_2)
@@ -69,6 +69,9 @@ print(my_list)
 # certain element x, with the additional constraint that your algorithm must
 # return the elements back to S in their original order. You may only use S,
 # Q, and a constant number of other variables.
+
+def find_in_stack(S: ArrayStack, Q: ArrayQueue, e):
+    print('next')
 
 
 # Implement a hot potato game using a queue

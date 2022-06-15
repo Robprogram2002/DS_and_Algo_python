@@ -1,9 +1,14 @@
 from __future__ import annotations
-from Goodrich_Tamassia.linear_DA.EmptyError import Empty
+from linear_DA.EmptyError import Empty
 
 
 class SingleLinkedList:
+    """"List implementation using a link of nodes"""
+
     class _Node:
+        """Lightweight, nonpublic class for storing a singly linked node"""
+        __slots__ = 'element', 'next'  # streamline memory usage
+
         def __init__(self, item, next_ref):
             self.element = item
             self.next = next_ref
@@ -53,7 +58,7 @@ class SingleLinkedList:
         new_node = self._Node(value, self._head)
         self._head = new_node
         self._size += 1
-        if self._head is None:
+        if self._tail is None:
             self._tail = new_node
 
     def remove(self):
@@ -105,9 +110,27 @@ class SingleLinkedList:
     def __iter__(self):
         return self._LinkedIterator(self._head)
 
+    # Optional methods
+    def __getitem__(self, item):
+        if not 0 <= item < self._size:
+            raise IndexError('Index out of range')
+        current = self._head
+        for _ in range(item):
+            current = current.next
+        return current.element
+
+    def __setitem__(self, key, value):
+        if not 0 <= key < self._size:
+            raise IndexError('Index out of range')
+        current = self._head
+        for _ in range(key):
+            current = current.next
+        current.element = value
+
 
 if __name__ == '__main__':
     link_list = SingleLinkedList()
+    print(link_list.is_empty())
     link_list.append(1)
     link_list.append(10)
     link_list.append(100)
@@ -129,8 +152,11 @@ if __name__ == '__main__':
     print(link_list.extend(list_B))
     for k in link_list:
         print(k)
+    print('------------')
+    print(list_B[1])
+    list_B[1] = 'BB'
+    print(list_B)
 
 # Describe in detail how to swap two nodes x and y (and not just their contents) in a singly linked list L given
 # references only to x and y. Repeat this exercise for the case when L is a doubly linked list. Which algorithm
 # takes more time?
-

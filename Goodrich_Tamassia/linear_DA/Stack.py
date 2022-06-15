@@ -10,7 +10,7 @@ class ArrayStack:
         if maxlen:
             self._data = [None] * maxlen  # nonpublic list instance
         else:
-            self._data = []
+            self._data = []  # initialize the underline list with a pre-define length
         self._n = 0
         self.max = maxlen
 
@@ -23,7 +23,10 @@ class ArrayStack:
         return self._n == 0
 
     def push(self, e):
-        """Add element e to the top of the stack."""
+        """Add element e to the top of the stack.
+
+            Raise Full exception if there is max length limit violation
+        """
         if self.max:
             if self._n == self.max:
                 raise Full('the stack is full')
@@ -71,25 +74,46 @@ class ArrayStack:
             self._data[start], self._data[last - 1] = self._data[last - 1], self._data[start]  # swap first and last
             self._reverse_array(start + 1, last - 1)  # recur on rest
 
-    def transfer(self, T):
+    def transfer_inverse(self, T):
         """Transfer the elements of the current stack into other"""
         while not self.is_empty():
             T.push(self.pop())
+
+    def transfer_direct(self, T):
+        """Transfer the elements of the current stack into other"""
+        for k in range(self._n):
+            T.push(self._data[k])
+
+        while not self.is_empty():
+            self.pop()
 
     def reverse(self, new=False):
         """Reverse the elements of the stack. If new is True, then return a new Stack with the same elements but
         in reverse order"""
         if new:
             temp = ArrayStack()
-            self.transfer(temp)
-            result = temp.copy()
-            temp.transfer(self)
-            return result
+            for k in range(self._n, 0, -1):
+                temp.push(self._data[k - 1])
+            return temp
         else:
             self._reverse_array(0, self._n)
 
+    def clear(self):
+        """Remove all the elements from the stack"""
+        if self.max is None:
+            self._data = []
+        else:
+            for k in range(self._n):
+                self._data[k] = None
+        self._n = 0
+
     def __str__(self):
-        return str(self._data)
+        if self.max is None:
+            return str(self._data)
+        else:
+            if self.is_empty():
+                return '[]'
+            return '[' + ', '.join(self._data[k] for k in range(self._n)) + ']'
 
 
 class LinkedStack:
@@ -171,14 +195,13 @@ class LinkedStack:
         temp.transfer(self)
         return result
 
-
-def __str__(self):
-    elements = []
-    current = self._head
-    while current is not None:
-        elements.append(current)
-        current = current._next
-    return str(elements)
+    def __str__(self):
+        elements = []
+        current = self._head
+        while current is not None:
+            elements.append(current)
+            current = current._next
+        return str(elements)
 
 
 if __name__ == '__main__':
@@ -213,4 +236,10 @@ if __name__ == '__main__':
     print(S)
     print(R)
     print(T.reverse(new=True))
+    print('T: ', T)
+    v = ArrayStack()
+    print(v)
+    T.transfer_inverse(v)
+    # T.transfer_direct(v)
+    print('v: ', v)
     print(T)

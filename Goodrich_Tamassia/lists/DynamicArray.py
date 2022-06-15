@@ -24,9 +24,12 @@ class DynamicArray:
             else:
                 raise IndexError('invalid index')
         elif isinstance(k, slice):
-            slicing = DynamicArray()
-            for k in range(k.start, k.stop):
-                slicing.append(self._A[k])
+            if 0 <= k.start <= self._n - 1 and 0 <= k.stop <= self._n:
+                raise IndexError('Index out of box')
+            length = k.stop - k.start
+            slicing = DynamicArray(length)
+            for j in range(length):
+                slicing[j] = A[k.start + j]
             return slicing
 
     def append(self, obj):
@@ -47,13 +50,13 @@ class DynamicArray:
     def _resize_and_insert(self, c, k, value):
         """Resize internal array to capacity c and insert a new element in the process"""
         B = self._make_array(c)
-        for j in range(0, k):
+        for j in range(0, k):  # copy  all elemenst from index 0 to k-1
             B[j] = self._A[j]
-        B[k] = value
-        self._n += 1
-        for i in range(k + 1, self._n):
-            B[i] = self._A[i - 1]
+        B[k] = value  # set value at index k
+        for i in range(k, self._n):  # copy the rest of the original array
+            B[i + 1] = self._A[i]
         self._A = B
+        self._n += 1
         self._capacity = c
 
     def _make_array(self, c):  # nonpublic utility
@@ -215,7 +218,7 @@ class DynamicArray:
         size = self._n * other
         new_array = self._make_array(size)
         for k in range(size):
-            print(k, ' : ', k % self._n)
+            # print(k, ' : ', k % self._n)
             new_array[k] = self._A[k % self._n]
         return list(new_array)
 
@@ -234,6 +237,9 @@ class DynamicArray:
 if __name__ == '__main__':
     A = DynamicArray()
     A.append(3)
+    A.append(200)
+    A.append(-23)
+    A.append(1)
     A.append(10)
     A.append(-2)
     A.append(0)
@@ -243,13 +249,21 @@ if __name__ == '__main__':
     print(A._capacity)
     for i in range(len(A)):
         print(A[i], end='\t')
+    A.insert(4, 0)
+    print('')
+    for i in range(len(A)):
+        print(A[i], end='\t')
+    print('')
+    print(A._n)
+    print(A._capacity)
+
     print('')
     A[1:3].print_lis()
     A.extend([1, 2, 3])
     A.print_lis()
     A[5] = -100
     A.print_lis()
-    A[-6] = 'abc'
+    # A[-6] = 'abc'
     A.print_lis()
     A.pop()
     A.pop(2)
@@ -272,6 +286,7 @@ if __name__ == '__main__':
     A.append(-2)
     A.append(0)
     A.append(3)
+    A.insert(0, 3)
     A.print_lis()
     A.remove_all(3)
     A.print_lis()

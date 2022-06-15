@@ -2,8 +2,9 @@
 # version of that method suffices to initialize a new instance. We also rely on the
 # inherited methods len and is empty in meeting the deque ADT.
 
-from Goodrich_Tamassia.lists.DoublyLinkedList import _DoublyLinkedBase
+
 from EmptyError import Empty
+from lists.DoublyLinkedList import _DoublyLinkedBase
 
 
 class ArrayDeque:
@@ -124,6 +125,50 @@ class ArrayDeque:
             current = (current + 1) % len(self._data)
         print(']')
 
+    def remove(self, e):
+        """Remove the first matching element if any
+
+        Raise ValueError exception if element is not found
+        """
+        current = self._front
+        index = -1
+        for k in range(self._size):
+            if self._data[current] == e:
+                index = k
+                break
+            current = (current + 1) % len(self._data)
+
+        if index == -1:
+            raise ValueError('Element not found in deque')
+        elif index <= self._size // 2:  # move the element to be removed to the front
+            while index > 0:
+                current = (index + self._front) % len(self._data)
+                before = (index - 1 + self._front) % len(self._data)
+                self._data[before], self._data[current] = self._data[current], self._data[before]
+                index -= 1
+            self.remove_left()
+        else:  # move the element to be removed to the back
+            while index < self._size - 1:
+                current = (index + self._front) % len(self._data)
+                next = (index + 1 + self._front) % len(self._data)
+                self._data[current], self._data[next] = self._data[next], self._data[current]
+                index += 1
+            self.remove_right()
+
+    def __getitem__(self, item):
+        if not 0 <= item <= self._size - 1:
+            raise IndexError('index out of range')
+
+        index = (self._front + item) % len(self._data)
+        return self._data[index]
+
+    def __setitem__(self, key, value):
+        if not 0 <= key <= self._size - 1:
+            raise IndexError('index out of range')
+
+        index = (self._front + key) % len(self._data)
+        self._data[index] = value
+
 
 class LinkedDeque(_DoublyLinkedBase):  # note the use of inheritance
     """Double-ended queue implementation based on a doubly linked list."""
@@ -171,6 +216,73 @@ class LinkedDeque(_DoublyLinkedBase):  # note the use of inheritance
         if self.is_empty():
             raise Empty("Deque is empty")
         return self._delete_node(self._trailer._prev)  # use inherited method
+
+    # optional methods
+
+    def rotate(self, shift=1):
+        if shift > 1:
+            for i in range(shift):
+                self.rotate()
+            return
+        self.insert_last(self.delete_first())
+
+    def count(self, value):
+        current = self._header._next
+        count = 0
+        while current is not None:
+            if current._element == value:
+                count += 1
+            current = current._next
+        return count
+
+    def clear(self):
+        self._header._next = self._trailer
+        self._trailer._prev = self._header
+        self._size = 0
+
+    def print_deque(self):
+        current = self._header._next
+        print('[', end='')
+        while current is not None:
+            print(current._element, end=', ')
+            current = current._next
+        print(']')
+
+    def remove(self, e):
+        """Remove the first matching element if any
+
+        Raise ValueError exception if element is not found
+        """
+        current = self._header._next
+        found = False
+        while current is not None:
+            if current._element == e:
+                found = True
+                break
+            current = current._next
+
+        if found:
+            self._delete_node(current)
+        else:
+            raise ValueError('Element not found in deque')
+
+    def __getitem__(self, item):
+        if not 0 <= item <= self._size - 1:
+            raise IndexError('index out of range')
+
+        current = self._header
+        for _ in range(item):
+            current = current._next
+        return current._element
+
+    def __setitem__(self, key, value):
+        if not 0 <= key <= self._size - 1:
+            raise IndexError('index out of range')
+
+        current = self._header
+        for _ in range(key):
+            current = current._next
+        current._element = value
 
 
 if __name__ == '__main__':
@@ -227,4 +339,17 @@ if __name__ == '__main__':
     deque.append_right('c')
     deque.print_deque()
     deque.append_right('d')
+    deque.print_deque()
+    print('------------------')
+    deque.remove(10)
+    deque.print_deque()
+    deque.append_left('a')
+    deque.print_deque()
+    deque.remove('d')
+    deque.print_deque()
+    deque.append_right('x')
+    deque.print_deque()
+    print(deque[2])
+    deque[2] = -50
+    deque[4] = 'y'
     deque.print_deque()

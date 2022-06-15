@@ -37,6 +37,9 @@ class Matrix:
         #         sum_total += self.matrix[k][j]
         # return sum_total
 
+    def sum_cells_recursive(self, row):
+        print('next')
+
     def __add__(self, other):
         new_matrix = Matrix(self.dim[0], self.dim[1])
         if isinstance(other, (int, float)):
@@ -49,6 +52,21 @@ class Matrix:
                     new_matrix[[k, j]] = self.matrix[k][j] + other[[k, j]]
         else:
             raise TypeError('matrix only can add an scalar value or another matrix with the same dimensions')
+
+        return new_matrix
+
+    def __mul__(self, other):
+        if not isinstance(other, Matrix):
+            raise ValueError('Only can multiply by other matrix')
+        elif self.dim[1] != other.dim[0]:
+            raise ValueError('Matrix not agree in dimensions')
+        new_matrix = Matrix(self.dim[0], other.dim[1])
+        for j in range(self.dim[0]):
+            for i in range(other.dim[1]):
+                total = 0
+                for k in range(self.dim[1]):
+                    total += self.matrix[j][k] * other[[k, i]]
+                new_matrix[[j, i]] = total
 
         return new_matrix
 
@@ -67,3 +85,9 @@ if __name__ == '__main__':
     matrix_B = matrix_A + matrix_A
     matrix_B.print_matrix()
     print(matrix_B.sum_cells())
+    print('......................')
+    matrix_A = Matrix(3, 3) + 3
+    matrix_A.print_matrix()
+    matrix_B.print_matrix()
+    mult_mat = matrix_A * matrix_B
+    mult_mat.print_matrix()

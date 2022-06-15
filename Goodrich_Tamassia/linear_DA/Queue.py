@@ -51,7 +51,7 @@ class ArrayQueue:
 
     def enqueue(self, e):
         """Add an element to the back of queue."""
-        if self._max and self._size == self._max:
+        if self._max and (self._size == self._max):
             raise Full('The queue is full cannot add a new element')
 
         if self._max is None and self._size == len(self._data):
@@ -71,11 +71,14 @@ class ArrayQueue:
             walk = (1 + walk) % len(old)  # use old size as modulus
         self._front = 0  # front has been realigned
 
-    def rotate(self, shift=None):
-
-        if shift is not None and shift > 1:
+    def rotate(self, shift=1):
+        if shift > 1:
             for i in range(shift):
                 self.rotate()
+            return
+
+        if self._size == len(self._data):  # if list is full just advance the front pointer
+            self._front = (self._front + 1) % len(self._data)
             return
 
         answer = self._data[self._front]
@@ -209,8 +212,7 @@ class CircularQueue:
         """
         if self.is_empty():
             raise Empty('Queue is empty')
-        head = self._tail._next
-        return head._element
+        return self._tail._next._element
 
     def dequeue(self):
         """Remove and return the first element of the queue (i.e., FIFO).
