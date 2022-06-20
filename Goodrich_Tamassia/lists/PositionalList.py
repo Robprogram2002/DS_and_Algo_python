@@ -1,4 +1,4 @@
-from Goodrich_Tamassia.lists.DoublyLinkedList import _DoublyLinkedBase
+from lists.DoublyLinkedList import _DoublyLinkedBase
 
 
 class PositionalList(_DoublyLinkedBase):

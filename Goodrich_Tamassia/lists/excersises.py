@@ -100,3 +100,61 @@ def add_nth_list_3dim(data_a: [], data_b: []):
 
 
 print(add_nth_list_3dim(data_A, data_B))
+
+# Suppose that x and y are references to nodes of circularly linked lists, although not necessarily the same list.
+# Describe a fast algorithm for telling if x and y belong to the same list.
+
+# Give a fast algorithm for concatenating two doubly linked lists L and M, with header and trailer sentinel nodes,
+# into a single list L'
+
+# Implement a function, with calling syntax max(L), that returns the maximum element from a PositionalList instance
+# L containing comparable elements.
+
+# Redo the previously problem with max as a method of the PositionalList class, so that calling syntax L.max() is
+# supported.
+
+# Update the PositionalList class to support an additional method find(e), which returns the position of the
+# (first occurrence of) element e in the list (or None if not found).
+
+# Repeat the previous process using recursion. Your method should not contain any loops
+
+# Provide support for a __reversed__ method of the PositionalList class that is similar to the given __iter__
+# , but that iterates the elements in reversed order.
+
+# Implement a clear() method for the FavoritesList class that returns the list to empty.
+
+# Implement a reset counts() method for the FavoritesList class that resets all elements’ access counts to zero
+# (while leaving the order of the list unchanged).
+
+# Give a complete implementation of the stack ADT using a singly linked list that includes a header sentinel.
+
+# Implement a method, concatenate(Q2) for the LinkedQueue class that takes all elements of LinkedQueue Q2 and appends
+# them to the end of the original queue. The operation should run in O(1) time and should result in Q2 being an empty
+# queue
+
+# Describe a fast recursive algorithm for reversing a singly linked list.
+
+# Design a circular positional list ADT that abstracts a circularly linked list in the same way that the positional
+# list ADT abstracts a doubly linked list, with a notion of a designated “cursor” position within the list.
+
+# Modify the DoublyLinkedBase class to include a reverse method that reverses the order of the list, yet without 
+# creating or destroying any nodes.
+
+# Modify the PositionalList class to support a method swap(p, q) that causes the underlying nodes referenced by
+# positions p and q to be exchanged for each other
+
+# Implement a function that accepts a PositionalList L of n integers sorted in nondecreasing order, and another valueV,
+# and determines in O(n) time if there are two elements ofL that sum precisely toV. The function should return a pair of
+# positions of such elements, if found, or None otherwise.
+
+# Write a Scoreboard class that maintains the top 10 scores for a game application using a singly linked list,
+
+# Describe a method for performing a card shuffle of a list of 2n elements, by converting it into two lists. A card
+# shuffle  is a permutation where a list L is cut into two lists, L1 and L2,where L1 is the first half of L and L2 is
+# the second half of L, and then these two lists are merged into one by taking the first element in L1, then the first
+# element in L2, followed by the second element in L1, the second element in L2, and so on.
+
+# An array A is sparse if most of its entries are empty (i.e., None). A list L can be used to implement such an array
+# efficiently. In particular, for each nonempty cell A[i], we can store an entry (i,e) in L,where e is the element
+# stored at A[i]. This approach allows us to represent A using O(m) storage, where m is the number of nonempty entries
+# in A. Provide such a SparseArray class

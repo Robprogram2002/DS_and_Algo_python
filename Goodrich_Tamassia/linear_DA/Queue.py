@@ -1,5 +1,5 @@
-from EmptyError import Empty
-from FullError import Full
+from linear_DA.FullError import Full
+from linear_DA.EmptyError import Empty
 
 
 class ArrayQueue:
@@ -160,6 +160,16 @@ class LinkedQueue:
         self._tail = newest  # update reference to tail node
         self._size += 1
 
+    def rotate(self, shift=1):
+        if shift > 1:
+            for _ in range(shift):
+                self.rotate()
+
+        self._tail._next = self._head
+        self._tail = self._head
+        self._head = self._head._next
+        self._tail._next = None
+
     def print_queue(self):
         current = self._head
         print('[')
@@ -245,18 +255,18 @@ class CircularQueue:
         if self._size > 0:
             self._tail = self._tail._next  # old head becomes new tail
 
-    def _count_nodes(self, current, first):
-        if current._element == first:
+    def _count_nodes(self, current):
+        if current._element == self._tail._element:
             return 1
         else:
-            return 1 + self._count_nodes(current._next, first)
+            return 1 + self._count_nodes(current._next)
 
     def nodes(self):
         """Return the number of nodes in the queue"""
         if self.is_empty():
             return 0
         else:
-            return self._count_nodes(self._tail._next, self._tail._element)
+            return self._count_nodes(self._tail._next)
 
 
 if __name__ == '__main__':
